@@ -1,9 +1,12 @@
 import os
 import json
 from flask import Flask, render_template, request
+if os.path.exists("env.py"):
+    import env
 
 
 app = Flask(__name__)
+app.secret_key = os.eviron.get("SECRET_KEY")
 
 @app.route("/")
 def index():
@@ -24,14 +27,17 @@ def member_name(member_name):
         for obj in data:
             if obj["url"] == member_name:
                 member = obj
-    return render_template("member.html", member = member)
+    return render_template(
+        "member.html", member = member)
 
 
 @app.route("/contact", methods = ["GET", "POST"])
 def contact():
     if request.method == "POST":
-        print(request.form.get("name"))
-    return render_template("contact.html",page_title="Contact" )
+        flash("Thanks {}, we have recieved your message!".format(
+            request.form.get("name")))
+    return render_template(
+        "contact.html",page_title="Contact" )
 
 @app.route("/careers")
 def careers():
